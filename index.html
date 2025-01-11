@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Music Player</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>
+    <link href="https://unpkg.com/@material-tailwind/html@latest/styles/material-tailwind.css" rel="stylesheet"/>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Main Player Card -->
+        <div class="max-w-4xl mx-auto bg-white/5 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-white/10">
+            <div class="flex flex-col md:flex-row">
+                <!-- Left Side - Album Art & Visualizer -->
+                <div class="md:w-1/2 relative">
+                    <div class="relative h-80 md:h-full group overflow-hidden">
+                        <canvas id="visualizer" class="absolute inset-0 w-full h-full"></canvas>
+                        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40"></div>
+                    </div>
+                </div>
+
+                <!-- Right Side - Controls & Playlist -->
+                <div class="md:w-1/2 p-8">
+                    <!-- Now Playing -->
+                    <div class="text-center md:text-left mb-8">
+                        <h2 id="songTitle" class="text-2xl font-bold text-white mb-2">Pilih Lagu</h2>
+                        <p id="artistName" class="text-gray-300 text-lg">Artis</p>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="mb-6">
+                        <div class="h-1.5 bg-white/10 rounded-full cursor-pointer" id="progressContainer">
+                            <div id="progress" class="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full w-0 relative">
+                                <div class="absolute -right-2 -top-1.5 w-4 h-4 bg-white rounded-full shadow-lg opacity-0 hover:opacity-100 transition-opacity"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-400 mt-2">
+                            <span id="currentTime">0:00</span>
+                            <span id="duration">0:00</span>
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="flex justify-center items-center space-x-8 mb-8">
+                        <button class="text-gray-400 hover:text-white transition-colors" id="shuffleBtn">
+                            <span class="material-icons">shuffle</span>
+                        </button>
+                        <button class="text-gray-400 hover:text-white transition-colors" id="prevBtn">
+                            <span class="material-icons">skip_previous</span>
+                        </button>
+                        <button id="playBtn" class="w-16 h-16 flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500 rounded-full text-white hover:from-blue-600 hover:to-purple-600 transition-all transform hover:scale-105 shadow-lg">
+                            <span class="material-icons text-3xl">play_arrow</span>
+                        </button>
+                        <button class="text-gray-400 hover:text-white transition-colors" id="nextBtn">
+                            <span class="material-icons">skip_next</span>
+                        </button>
+                        <button class="text-gray-400 hover:text-white transition-colors" id="repeatBtn">
+                            <span class="material-icons">repeat</span>
+                        </button>
+                    </div>
+
+                    <!-- Volume Control -->
+                    <div class="flex items-center space-x-4 mb-8">
+                        <span class="material-icons text-gray-400">volume_up</span>
+                        <div class="flex-1 h-1.5 bg-white/10 rounded-full cursor-pointer" id="volumeContainer">
+                            <div id="volumeBar" class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Playlist -->
+                    <div class="bg-black/30 backdrop-blur-md rounded-xl p-4 max-h-60 overflow-y-auto border border-white/10">
+                        <h3 class="text-white font-bold mb-4">Playlist</h3>
+                        <ul id="playlist" class="space-y-2">
+                            <!-- Playlist items will be inserted here -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio"></audio>
+    <input type="file" id="fileInput" accept="audio/*" multiple class="hidden">
+    <script>
+        const defaultPlaylist = [
+            {
+                title: "Cinta Dalam Do'a",
+                artist: "Secret Admirer",
+                url: "./music/Cinta Dalam Do'a.mp3"
+            },
+            {
+                title: "Dalam Diam",
+                artist: "Secret Admirer",
+                url: "./music/Dalam Diam.mp3"
+            },
+            {
+                title: "Cinta Dalam Diam",
+                artist: "Secret Admirer",
+                url: "./music/Cinta Dalam Diam.mp3"
+            },
+            {
+                title: "Cinta Tanpa Akhir",
+                artist: "Secret Admirer",
+                url: "./music/Cinta Tanpa Akhir.mp3"
+            },
+            {
+                title: "Antara Kita",
+                artist: "Secret Admirer",
+                url: "./music/Antara Kita.mp3"
+            },
+            {
+                title: "Kembali ke Pelukanku",
+                artist: "Secret Admirer",
+                url: "./music/Kembali ke Pelukanku.mp3"
+            }
+        ];
+    </script>
+    <script src="player.js"></script>
+</body>
+</html> 
