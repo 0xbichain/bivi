@@ -13,7 +13,6 @@ const nextBtn = document.getElementById('nextBtn');
 const shuffleBtn = document.getElementById('shuffleBtn');
 const repeatBtn = document.getElementById('repeatBtn');
 const playlistElement = document.getElementById('playlist');
-const fileInput = document.getElementById('fileInput');
 const visualizer = document.getElementById('visualizer');
 const ctx = visualizer.getContext('2d');
 
@@ -136,26 +135,6 @@ function drawVisualizer() {
     ctx.stroke();
 }
 
-// Handle file selection
-fileInput.addEventListener('change', (e) => {
-    const files = Array.from(e.target.files);
-    
-    files.forEach(file => {
-        const song = {
-            title: file.name.replace(/\.[^/.]+$/, ""),
-            artist: "Local File",
-            file: file
-        };
-        playlist.push(song);
-    });
-    
-    savePlaylist();
-    updatePlaylistUI();
-    if (playlist.length === files.length) {
-        loadSong(playlist[0], 0);
-    }
-});
-
 // Update playlist UI
 function updatePlaylistUI() {
     playlistElement.innerHTML = '';
@@ -166,9 +145,7 @@ function updatePlaylistUI() {
         }`;
         li.innerHTML = `
             <div class="flex items-center space-x-2">
-                <span class="material-icons text-gray-400 text-sm">
-                    ${song.file ? 'upload_file' : 'music_note'}
-                </span>
+                <span class="material-icons text-gray-400 text-sm">music_note</span>
                 <span class="text-gray-300">${song.title}</span>
             </div>
             <span class="text-xs text-gray-500">${song.artist}</span>
@@ -185,8 +162,7 @@ async function loadSong(song, index) {
         songTitle.textContent = song.title;
         artistName.textContent = song.artist;
         
-        // Gunakan URL langsung jika itu lagu default, atau createObjectURL jika file upload
-        audio.src = song.file ? URL.createObjectURL(song.file) : song.url;
+        audio.src = song.url;
         
         await audio.load();
         
@@ -301,24 +277,6 @@ function formatTime(seconds) {
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
-
-// Drag and drop support
-document.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    document.body.classList.add('bg-blue-900');
-});
-
-document.addEventListener('drop', (e) => {
-    e.preventDefault();
-    document.body.classList.remove('bg-blue-900');
-    
-    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('audio/'));
-    if (files.length > 0) {
-        fileInput.files = e.dataTransfer.files;
-        const event = new Event('change');
-        fileInput.dispatchEvent(event);
-    }
-});
 
 // Tambahkan fungsi untuk menyimpan playlist ke localStorage
 function savePlaylist() {
