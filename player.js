@@ -320,13 +320,6 @@ document.addEventListener('drop', (e) => {
     }
 });
 
-// Add button to trigger file input
-const addButton = document.createElement('button');
-addButton.className = 'fixed bottom-8 right-8 bg-blue-500 p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors';
-addButton.innerHTML = '<span class="material-icons text-white">add</span>';
-addButton.addEventListener('click', () => fileInput.click());
-document.body.appendChild(addButton);
-
 // Tambahkan fungsi untuk menyimpan playlist ke localStorage
 function savePlaylist() {
     const playlistData = playlist.map(song => ({
