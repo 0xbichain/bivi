@@ -278,64 +278,34 @@ function formatTime(seconds) {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 }
 
-// Tambahkan fungsi untuk menyimpan playlist ke localStorage
-function savePlaylist() {
-    const playlistData = playlist.map(song => ({
-        title: song.title,
-        artist: song.artist,
-        // Kita tidak bisa menyimpan File object langsung ke localStorage
-        // Jadi kita akan menyimpan path-nya saja
-        filePath: song.file ? song.file.name : song.url
-    }));
-    localStorage.setItem('musicPlaylist', JSON.stringify(playlistData));
-}
-
-// Tambahkan fungsi untuk memuat playlist dari localStorage
-function loadSavedPlaylist() {
-    const savedPlaylist = localStorage.getItem('musicPlaylist');
-    if (savedPlaylist) {
-        const playlistData = JSON.parse(savedPlaylist);
-        // Tampilkan pesan bahwa ada playlist tersimpan
-        if (playlistData.length > 0) {
-            songTitle.textContent = 'Playlist tersimpan tersedia';
-            artistName.textContent = `${playlistData.length} lagu`;
-        }
-    }
-}
-
-// Panggil loadSavedPlaylist saat halaman dimuat
-document.addEventListener('DOMContentLoaded', loadSavedPlaylist);
-
 // Load playlist default saat halaman dimuat
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // Hapus event listener ganda
-        loadSavedPlaylist();
+        // Update playlist UI terlebih dahulu
         updatePlaylistUI();
         
-        // Tunggu audio context siap
+        // Load lagu pertama
         if (playlist.length > 0) {
             const firstSong = playlist[0];
             
-            // Pre-load audio untuk memastikan bisa diputar
-            audio.src = firstSong.file ? URL.createObjectURL(firstSong.file) : firstSong.url;
-            await audio.load();
-            
             // Setup visualizer setelah user interaction
             const startPlayback = async () => {
+                if (!audioContext) {
+                    setupVisualizer();
+                }
                 if (audioContext && audioContext.state === 'suspended') {
                     await audioContext.resume();
                 }
-                setupVisualizer();
                 loadSong(firstSong, 0);
                 document.removeEventListener('click', startPlayback);
             };
             
-            document.addEventListener('click', startPlayback);
-            
-            // Update UI
+            // Update UI awal
             songTitle.textContent = firstSong.title;
             artistName.textContent = firstSong.artist;
+            
+            // Tunggu interaksi user untuk memulai playback
+            document.addEventListener('click', startPlayback);
         }
     } catch (error) {
         console.error('Error initializing player:', error);
